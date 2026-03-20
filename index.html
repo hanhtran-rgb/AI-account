@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Subsidy Tracking — PMAX Account Team</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: white; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center;
+}
+.header h1 { font-size: 20px; font-weight: 700; }
+.header p { font-size: 12px; opacity: 0.55; margin-top: 3px; }
+.week-badge { background: rgba(255,255,255,0.15); padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.updated { font-size: 11px; opacity: 0.45; margin-top: 5px; text-align: right; }
+
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; padding: 18px 32px; }
+.stat-card { background: white; border-radius: 12px; padding: 18px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); border-left: 4px solid #e5e7eb; }
+.stat-card.blue  { border-left-color: #3b82f6; }
+.stat-card.green { border-left-color: #10b981; }
+.stat-card.amber { border-left-color: #f59e0b; }
+.stat-card.red   { border-left-color: #ef4444; }
+.stat-label { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; font-weight: 700; }
+.stat-value { font-size: 30px; font-weight: 800; line-height: 1.1; margin-top: 3px; }
+.stat-card.blue  .stat-value { color: #3b82f6; }
+.stat-card.green .stat-value { color: #10b981; }
+.stat-card.amber .stat-value { color: #f59e0b; }
+.stat-card.red   .stat-value { color: #ef4444; }
+.stat-sub { font-size: 11px; color: #9ca3af; margin-top: 3px; }
+
+.tabs { display: flex; gap: 4px; padding: 0 32px 14px; }
+.tab { padding: 7px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: #6b7280; transition: all .15s; }
+.tab.active { background: white; color: #1a1a2e; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+
+.content { padding: 0 32px 32px; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* TABLE */
+.table-wrap { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+.table-head { padding: 14px 22px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f3f4f6; }
+.table-head h2 { font-size: 14px; font-weight: 700; }
+.chips { display: flex; gap: 6px; }
+.chip { padding: 3px 11px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: 1.5px solid #e5e7eb; background: white; color: #6b7280; }
+.chip.active { border-color: #3b82f6; background: #eff6ff; color: #3b82f6; }
+table { width: 100%; border-collapse: collapse; }
+thead th { background: #f9fafb; padding: 10px 14px; text-align: left; font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; }
+tbody tr { border-bottom: 1px solid #f3f4f6; }
+tbody tr:hover { background: #fafafa; }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 11px 14px; font-size: 13px; }
+td:first-child { font-weight: 700; font-size: 14px; color: #9ca3af; width: 36px; }
+
+.name-cell { display: flex; align-items: center; gap: 9px; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; flex-shrink: 0; }
+.name-cell strong { font-size: 13px; font-weight: 600; display: block; }
+.name-cell span { font-size: 11px; color: #9ca3af; }
+
+.grade-badge { padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+.grade-E2 { background: #fef3c7; color: #92400e; }
+.grade-E1 { background: #dbeafe; color: #1e40af; }
+.grade-T2 { background: #d1fae5; color: #065f46; }
+
+.status-badge { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; }
+.s-usecase  { background: #d1fae5; color: #065f46; }
+.s-replied  { background: #ede9fe; color: #5b21b6; }
+.s-pending  { background: #fef3c7; color: #92400e; }
+
+.score-cell { display: flex; align-items: center; gap: 7px; min-width: 120px; }
+.bar-bg { flex: 1; height: 6px; background: #f3f4f6; border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; }
+.score-num { font-size: 13px; font-weight: 700; min-width: 28px; text-align: right; }
+.uc-text { max-width: 270px; font-size: 12px; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.uc-text.highlight { color: #2563eb; font-weight: 600; }
+
+/* SUB-SCORE BREAKDOWN */
+.sub-scores { display: flex; gap: 4px; }
+.sub-pill { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; color: white; }
+
+/* USE CASES */
+.uc-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+.uc-card { background: white; border-radius: 12px; padding: 18px 20px; box-shadow: 0 1px 4px rgba(0,0,0,.07); border-top: 3px solid; }
+.uc-card.gold   { border-top-color: #f59e0b; }
+.uc-card.silver { border-top-color: #94a3b8; }
+.uc-card.bronze { border-top-color: #cd7f32; }
+.uc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.uc-author { display: flex; align-items: center; gap: 8px; }
+.uc-score-big { font-size: 24px; font-weight: 800; color: #1a1a2e; }
+.uc-task { font-size: 13px; font-weight: 700; margin-bottom: 7px; }
+.uc-body { font-size: 12px; color: #4b5563; line-height: 1.6; }
+.uc-tag { display: inline-flex; align-items: center; gap: 3px; background: #f9fafb; border: 1px solid #e5e7eb; padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #374151; margin-top: 8px; margin-right: 4px; }
+.gap { margin-top: 16px; }
+.section-label { font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 10px; }
+
+.pending-wrap { background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+.pending-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.p-chip { padding: 5px 13px; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; font-size: 12px; font-weight: 600; color: #92400e; }
+
+/* CHARTS */
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.chart-card { background: white; border-radius: 12px; padding: 18px 22px; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+.chart-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 14px; color: #374151; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🤖 AI Subsidy Tracking — PMAX Account Team</h1>
+    <p>Vận hành bởi Sun + Claude · Tài trợ bởi anh Trung</p>
+  </div>
+  <div style="text-align:right">
+    <div class="week-badge">📅 Tuần 1 · T3 18/03 – T6 20/03/2026</div>
+    <div class="updated">Cập nhật 20/03 · 9/20 đã reply T3</div>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card blue">
+    <div class="stat-label">Đã reply T3</div>
+    <div class="stat-value">9</div>
+    <div class="stat-sub">45% · còn 11 chưa reply</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-label">Có use case AI</div>
+    <div class="stat-value">3</div>
+    <div class="stat-sub">Hân E2 · Hải · Ngân (ChatGPT)</div>
+  </div>
+  <div class="stat-card amber">
+    <div class="stat-label">Điểm TB (có reply)</div>
+    <div class="stat-value">37</div>
+    <div class="stat-sub">Top: Hân E2 (95đ) · Hải (85đ)</div>
+  </div>
+  <div class="stat-card red">
+    <div class="stat-label">Chưa reply T3</div>
+    <div class="stat-value">11</div>
+    <div class="stat-sub">T5 check-in: 20 draft đã tạo</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('ranking',this)">📊 Ranking</button>
+  <button class="tab" onclick="switchTab('usecases',this)">💡 Use Cases</button>
+  <button class="tab" onclick="switchTab('charts',this)">📈 Phân tích</button>
+</div>
+
+<div class="content">
+
+  <!-- RANKING -->
+  <div class="tab-panel active" id="tab-ranking">
+    <div class="table-wrap">
+      <div class="table-head">
+        <h2>Bảng xếp hạng · Tuần 1 (T3 18/3)</h2>
+        <div class="chips">
+          <button class="chip active" onclick="filter('all',this)">Tất cả (20)</button>
+          <button class="chip" onclick="filter('replied',this)">Đã reply (9)</button>
+          <button class="chip" onclick="filter('pending',this)">Chưa reply (11)</button>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nhân viên</th>
+            <th>Grade</th>
+            <th>Trạng thái</th>
+            <th>Điểm tổng</th>
+            <th>Tiêu chí (F·U·T·S)</th>
+            <th>Use case nổi bật</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="tab-panel" id="tab-usecases">
+    <p class="section-label">🏆 Use cases nổi bật tuần này</p>
+    <div class="uc-grid">
+
+      <div class="uc-card gold">
+        <div class="uc-header">
+          <div class="uc-author">
+            <div class="avatar" style="background:#f59e0b">HD</div>
+            <div><strong style="font-size:13px">Hân Duong</strong><div style="font-size:11px;color:#9ca3af">Sr. Account Executive · E2</div></div>
+          </div>
+          <div class="uc-score-big">95<span style="font-size:13px;color:#9ca3af">/100</span></div>
+        </div>
+        <div class="uc-task">📊 Build Dashboard tracking & Forecast New Enrollment</div>
+        <div class="uc-body">Dùng Claude build dashboard tracking + forecast New Enrollment cho client KPI. Quy trình 3 bước: give NE Playbook & historical data → fix model (+30% accuracy) → get team feedback để finalize. Kết quả vượt kỳ vọng.</div>
+        <div>
+          <span class="uc-tag">⏱ 24h+ tiết kiệm</span>
+          <span class="uc-tag">🎯 +30% accuracy</span>
+          <span class="uc-tag">⭐ Candidate Best Use Case</span>
+        </div>
+      </div>
+
+      <div class="uc-card silver">
+        <div class="uc-header">
+          <div class="uc-author">
+            <div class="avatar" style="background:#64748b">HN</div>
+            <div><strong style="font-size:13px">Hải Nguyen</strong><div style="font-size:11px;color:#9ca3af">Account Executive · E1</div></div>
+          </div>
+          <div class="uc-score-big">85<span style="font-size:13px;color:#9ca3af">/100</span></div>
+        </div>
+        <div class="uc-task">📄 Auto-generate BBNT cho Vietjet (10 markets)</div>
+        <div class="uc-body">Vietjet chạy 10+ markets + 2 seasonal campaigns, nghiệm thu nhiều phụ lục. Dùng Claude đọc HĐ, PL, bảng kê → build tool chọn phụ lục → xuất BBNT. Độ chính xác 90%, đang fine-tune format & wording.</div>
+        <div>
+          <span class="uc-tag">🎯 90% accuracy</span>
+          <span class="uc-tag">🌏 10 markets</span>
+          <span class="uc-tag">🚀 Scale tốt khi lên Pro</span>
+        </div>
+      </div>
+
+      <div class="uc-card bronze">
+        <div class="uc-header">
+          <div class="uc-author">
+            <div class="avatar" style="background:#92400e">TN</div>
+            <div><strong style="font-size:13px">Thanh Ngân</strong><div style="font-size:11px;color:#9ca3af">Account Team · T2</div></div>
+          </div>
+          <div class="uc-score-big">60<span style="font-size:13px;color:#9ca3af">/100</span></div>
+        </div>
+        <div class="uc-task">🎨 QC design cho post social (dùng ChatGPT)</div>
+        <div class="uc-body">Cung cấp tone/mood chiến dịch, thông tin dự án, nội dung post + brief → nhờ AI review bố cục, màu sắc, font chữ, background. AI giải thích lý do → summary trên góc nhìn cá nhân → feedback cho team creative. Giảm back-and-forth đáng kể.</div>
+        <div>
+          <span class="uc-tag">⏱ 1-2h tiết kiệm</span>
+          <span class="uc-tag">⚠️ ChatGPT (chưa vào được Claude)</span>
+          <span class="uc-tag">✅ Sẽ switch Claude tuần này</span>
+        </div>
+      </div>
+
+      <div style="background:white;border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
+        <p class="section-label" style="margin-bottom:8px">📋 Có kế hoạch rõ (chưa execute)</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="padding:10px 14px;background:#f0fdf4;border-radius:8px;border-left:3px solid #10b981">
+            <strong style="font-size:12px">Khánh Lê (E1)</strong> <span style="font-size:11px;color:#6b7280">· 32đ</span>
+            <div style="font-size:12px;color:#374151;margin-top:4px">4 hướng rõ: task management, booking tracking, recap meeting, analytics performance. Ưu tiên bắt đầu từ task management.</div>
+          </div>
+          <div style="padding:10px 14px;background:#eff6ff;border-radius:8px;border-left:3px solid #3b82f6">
+            <strong style="font-size:12px">Lâm Tú Hân (E1)</strong> <span style="font-size:11px;color:#6b7280">· 15đ</span>
+            <div style="font-size:12px;color:#374151;margin-top:4px">Vừa mua sim & đăng ký tài khoản Claude ngày 18/3. Tuần tới sẽ bắt đầu dùng.</div>
+          </div>
+          <div style="padding:10px 14px;background:#eff6ff;border-radius:8px;border-left:3px solid #3b82f6">
+            <strong style="font-size:12px">Phương Vy (E1)</strong> <span style="font-size:11px;color:#6b7280">· 12đ</span>
+            <div style="font-size:12px;color:#374151;margin-top:4px">Đang dùng ChatGPT + Gemini, đăng ký tài khoản Claude. Chuyển sang Claude khi có Pro.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="gap"></div>
+    <p class="section-label">⏳ Chưa reply T3 (11 người) — T5 draft đã tạo sẵn</p>
+    <div class="pending-wrap">
+      <div style="font-size:12px;color:#6b7280">Email T3 gửi 22:36 tối 17/3. 20 draft T5 vừa tạo trong Gmail — Sun send để nhắc nhở cuối tuần.</div>
+      <div class="pending-chips" id="pendingChips"></div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="tab-panel" id="tab-charts">
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>📊 Phân bổ điểm (9 người đã reply)</h3>
+        <canvas id="scoreChart" height="230"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>🎯 Reply rate theo Grade</h3>
+        <canvas id="gradeChart" height="230"></canvas>
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="chart-card">
+        <h3>📈 Trend điểm trung bình (cập nhật hàng tuần)</h3>
+        <canvas id="trendChart" height="110"></canvas>
+        <div style="font-size:11px;color:#9ca3af;margin-top:8px">Tuần 1 là baseline. Từ tuần 2, trendline sẽ hiển thị đà tăng trưởng.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const data = [
+  // status: 'usecase' | 'replied' | 'pending'
+  { name:'Hân Duong',     nick:'Hân (E2)',   grade:'E2', email:'han.duong',          status:'usecase', score:95, sub:[28,24,25,18], uc:'Build Dashboard tracking & Forecast NE · 24h+ saved', av:'#f59e0b' },
+  { name:'Hải Nguyen',    nick:'Hải',        grade:'E1', email:'thaihai.nguyen',      status:'usecase', score:85, sub:[25,23,17,20], uc:'Auto-generate BBNT Vietjet (10 markets) · 90% accuracy', av:'#64748b' },
+  { name:'Thanh Ngân',    nick:'Ngân',       grade:'T2', email:'thanhngan.le',        status:'usecase', score:60, sub:[20,20,12,8],  uc:'QC design social post · ChatGPT · 1-2h tiết kiệm', av:'#92400e' },
+  { name:'Khánh Lê',      nick:'Khánh',      grade:'E1', email:'khanh.le',            status:'replied', score:32, sub:[5,12,0,15],   uc:'Có plan: task mgmt, booking, meeting recap, analytics', av:'#3b82f6' },
+  { name:'Lâm Tú Hân',   nick:'Hân (Tú)',   grade:'E1', email:'tuhan.lam',           status:'replied', score:15, sub:[0,0,0,15],    uc:'Vừa đăng ký 18/3 · Bắt đầu tuần lợi', av:'#8b5cf6' },
+  { name:'Phương Vy',     nick:'Vy',         grade:'E1', email:'phuongvy.tran',       status:'replied', score:12, sub:[0,0,0,12],    uc:'Dùng ChatGPT/Gemini · Đăng ký Claude', av:'#ec4899' },
+  { name:'Linh Hồ',       nick:'Linh',       grade:'E1', email:'linh.ho',             status:'replied', score:12, sub:[0,0,0,12],    uc:'Chưa dùng · Sẽ thử tuần này (19/3)', av:'#06b6d4' },
+  { name:'Long Hoang',    nick:'Long',       grade:'E2', email:'hoanglong.nguyen',    status:'replied', score:10, sub:[0,0,0,10],    uc:'Chưa dùng · Sẽ testing tuần sau', av:'#6366f1' },
+  { name:'Huy Pham',      nick:'Huy',        grade:'E1', email:'duchuy.pham',         status:'replied', score:10, sub:[0,0,0,10],    uc:'Chưa sử dụng tuần qua', av:'#f97316' },
+  // pending
+  { name:'Linh Nguyễn',   nick:'Linh (T)',   grade:'E1', email:'linh.nguyenthuy',     status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Thảo Trương',   nick:'Thảo',       grade:'E1', email:'thao.truong',         status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Như Lê',        nick:'Như',        grade:'E1', email:'thaonhu.le',          status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Thư Trương',    nick:'Thư',        grade:'E1', email:'anhthu.truong',       status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Phương Lê',     nick:'Phương (L)', grade:'E1', email:'thaophuong.le',       status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Hạnh Phó',      nick:'Hạnh',       grade:'E1', email:'minhhanh.pho',        status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Nguyên Mai',    nick:'Nguyên',     grade:'E1', email:'nguyen.mai',          status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Bửu Thanh',     nick:'Thanh (L)',  grade:'E1', email:'buuthanh.ly',         status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Diễm Trinh',    nick:'Trinh',      grade:'T2', email:'diemtrinh.huynh',     status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Oanh Nguyễn',   nick:'Oanh',       grade:'E1', email:'oanh.nguyen',         status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Huyền Trâm',    nick:'Trâm',       grade:'T2', email:'huyentram.tong',      status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+];
+
+function scoreColor(s) {
+  if (s >= 80) return '#10b981';
+  if (s >= 50) return '#f59e0b';
+  if (s > 0)   return '#ef4444';
+  return '#d1d5db';
+}
+
+function renderTable(f) {
+  const rows = f === 'all' ? data : f === 'replied' ? data.filter(d => d.status !== 'pending') : data.filter(d => d.status === 'pending');
+  let rank = 1;
+  document.getElementById('tbody').innerHTML = rows.map(e => {
+    const sc = scoreColor(e.score);
+    const init = e.name.split(' ').map(w=>w[0]).join('').slice(-2);
+    const statusHtml = e.status === 'usecase'
+      ? '<span class="status-badge s-usecase">✓ Use case</span>'
+      : e.status === 'replied'
+      ? '<span class="status-badge s-replied">✓ Đã reply</span>'
+      : '<span class="status-badge s-pending">⏳ Chờ reply</span>';
+    const scoreHtml = e.status === 'pending'
+      ? '<span style="font-size:12px;color:#9ca3af">—</span>'
+      : `<div class="score-cell"><div class="bar-bg"><div class="bar-fill" style="width:${e.score}%;background:${sc}"></div></div><span class="score-num" style="color:${sc}">${e.score}</span></div>`;
+    const subHtml = e.status === 'pending' ? '—'
+      : `<div class="sub-scores">
+          <span class="sub-pill" style="background:#3b82f6" title="Tần suất">${e.sub[0]}</span>
+          <span class="sub-pill" style="background:#10b981" title="Use case">${e.sub[1]}</span>
+          <span class="sub-pill" style="background:#f59e0b" title="TG tiết kiệm">${e.sub[2]}</span>
+          <span class="sub-pill" style="background:#ef4444" title="Chia sẻ">${e.sub[3]}</span>
+        </div>`;
+    const rn = e.status === 'pending' ? '—' : rank++;
+    const ucClass = e.status === 'usecase' ? 'uc-text highlight' : 'uc-text';
+    return `<tr>
+      <td>${rn}</td>
+      <td><div class="name-cell"><div class="avatar" style="background:${e.av}">${init}</div><div><strong>${e.name}</strong><span>${e.email}@pmax</span></div></div></td>
+      <td><span class="grade-badge grade-${e.grade}">${e.grade}</span></td>
+      <td>${statusHtml}</td>
+      <td>${scoreHtml}</td>
+      <td>${subHtml}</td>
+      <td><div class="${ucClass}">${e.uc}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+function filter(f, btn) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable(f);
+}
+
+function renderPending() {
+  document.getElementById('pendingChips').innerHTML = data
+    .filter(d => d.status === 'pending')
+    .map(e => `<div class="p-chip">⏳ ${e.nick}</div>`)
+    .join('');
+}
+
+let chartsInit = false;
+function initCharts() {
+  if (chartsInit) return; chartsInit = true;
+  const scored = data.filter(d => d.status !== 'pending');
+
+  new Chart(document.getElementById('scoreChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: scored.map(e => e.nick),
+      datasets: [{ data: scored.map(e => e.score), backgroundColor: scored.map(e => scoreColor(e.score)+'99'), borderColor: scored.map(e => scoreColor(e.score)), borderWidth: 2, borderRadius: 6 }]
+    },
+    options: { responsive:true, plugins:{legend:{display:false}}, scales:{ y:{max:100,grid:{color:'#f3f4f6'}}, x:{grid:{display:false}} } }
+  });
+
+  const grades = ['E2','E1','T2'];
+  new Chart(document.getElementById('gradeChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: grades,
+      datasets: [
+        { label:'Đã reply', data: grades.map(g => data.filter(d=>d.grade===g&&d.status!=='pending').length), backgroundColor:'#3b82f699', borderColor:'#3b82f6', borderWidth:2, borderRadius:6 },
+        { label:'Chưa reply', data: grades.map(g => data.filter(d=>d.grade===g&&d.status==='pending').length), backgroundColor:'#fbbf2466', borderColor:'#f59e0b', borderWidth:2, borderRadius:6 },
+      ]
+    },
+    options: { responsive:true, plugins:{legend:{position:'bottom'}}, scales:{ y:{grid:{color:'#f3f4f6'},ticks:{stepSize:1}}, x:{grid:{display:false}} } }
+  });
+
+  new Chart(document.getElementById('trendChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: ['Tuần 1 (18/3)','Tuần 2','Tuần 3','Tuần 4'],
+      datasets: [
+        { label:'Điểm TB', data:[37,null,null,null], borderColor:'#3b82f6', backgroundColor:'#3b82f620', fill:true, tension:.4, pointRadius:5, pointBackgroundColor:'#3b82f6' },
+        { label:'Reply rate %', data:[45,null,null,null], borderColor:'#10b981', backgroundColor:'transparent', tension:.4, pointRadius:5, pointBackgroundColor:'#10b981', borderDash:[4,4] },
+      ]
+    },
+    options: { responsive:true, plugins:{legend:{position:'bottom'}}, scales:{ y:{min:0,max:100,grid:{color:'#f3f4f6'}}, x:{grid:{display:false}} } }
+  });
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'charts') initCharts();
+}
+
+renderTable('all');
+renderPending();
+</script>
+</body>
+</html>
