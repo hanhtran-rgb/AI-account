@@ -115,20 +115,20 @@ td:first-child { font-weight: 700; font-size: 14px; color: #9ca3af; width: 36px;
   </div>
   <div style="text-align:right">
     <div class="week-badge">📅 Tuần 1 · T3 18/03 – T6 20/03/2026</div>
-    <div class="updated">Cập nhật 20/03 16:00 · 9/20 reply T3 · 2/20 reply T5</div>
+    <div class="updated">Cập nhật 21/03 10:30 · 9/20 reply T3 · 11/20 reply T5</div>
   </div>
 </div>
 
 <div class="stats-row">
   <div class="stat-card blue">
-    <div class="stat-label">Đã reply T3</div>
-    <div class="stat-value">9</div>
-    <div class="stat-sub">45% · còn 11 chưa reply</div>
+    <div class="stat-label">Đã reply (T3+T5)</div>
+        <div class="stat-value">13</div>
+        <div class="stat-sub">65% · +4 mới từ T5 (Như, Phương L, Nguyên, Thư)</div>
   </div>
   <div class="stat-card green">
     <div class="stat-label">Có use case AI</div>
-    <div class="stat-value">3</div>
-    <div class="stat-sub">Hân E2 · Hải · Ngân (ChatGPT)</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub">Hân E2 · Hải · Ngân · Như (báo giá)</div>
   </div>
   <div class="stat-card amber">
     <div class="stat-label">Điểm TB (có reply)</div>
@@ -136,9 +136,9 @@ td:first-child { font-weight: 700; font-size: 14px; color: #9ca3af; width: 36px;
     <div class="stat-sub">Top: Hân E2 (95đ) · Hải (88đ)</div>
   </div>
   <div class="stat-card red">
-    <div class="stat-label">Chưa reply T3</div>
-    <div class="stat-value">11</div>
-    <div class="stat-sub">T5 check-in: 20 draft đã tạo</div>
+    <div class="stat-label">Chưa reply cả T3+T5</div>
+        <div class="stat-value">7</div>
+        <div class="stat-sub">Linh N · Thảo · Hạnh · B.Thanh · Trinh · Oanh · Trâm</div>
   </div>
 </div>
 
@@ -157,8 +157,8 @@ td:first-child { font-weight: 700; font-size: 14px; color: #9ca3af; width: 36px;
         <h2>Bảng xếp hạng · Tuần 1 (T3 18/3)</h2>
         <div class="chips">
           <button class="chip active" onclick="filter('all',this)">Tất cả (20)</button>
-          <button class="chip" onclick="filter('replied',this)">Đã reply (9)</button>
-          <button class="chip" onclick="filter('pending',this)">Chưa reply (11)</button>
+          <button class="chip" onclick="filter('replied',this)">Đã reply (13)</button>
+          <button class="chip" onclick="filter('pending',this)">Chưa reply (7)</button>
         </div>
       </div>
       <table>
@@ -255,9 +255,9 @@ td:first-child { font-weight: 700; font-size: 14px; color: #9ca3af; width: 36px;
     </div>
 
     <div class="gap"></div>
-    <p class="section-label">⏳ Chưa reply T3 (11 người) — T5 draft đã tạo sẵn</p>
+    <p class="section-label">⏳ Chưa reply cả T3+T5 (7 người)</p>
     <div class="pending-wrap">
-      <div style="font-size:12px;color:#6b7280">Email T3 gửi 22:36 tối 17/3. 20 draft T5 vừa tạo trong Gmail — Sun send để nhắc nhở cuối tuần.</div>
+      <div style="font-size:12px;color:#6b7280">Email T3 gửi 17/3, T5 gửi 20/3. 7 người chưa phản hồi cả hai đợt — cần follow up tuần 2.</div>
       <div class="pending-chips" id="pendingChips"></div>
     </div>
   </div>
@@ -296,15 +296,15 @@ const data = [
   { name:'Phương Vy',     nick:'Vy',         grade:'E1', email:'phuongvy.tran',       status:'replied', score:12, sub:[0,0,0,12],    uc:'Dùng ChatGPT/Gemini · Đăng ký Claude', av:'#ec4899' },
   { name:'Linh Hồ',       nick:'Linh',       grade:'E1', email:'linh.ho',             status:'replied', score:12, sub:[0,0,0,12],    uc:'Chưa dùng · Sẽ thử tuần này (19/3)', av:'#06b6d4' },
   { name:'Long Hoang',    nick:'Long',       grade:'E2', email:'hoanglong.nguyen',    status:'replied', score:10, sub:[0,0,0,10],    uc:'Chưa dùng · Sẽ testing tuần sau', av:'#6366f1' },
-  { name:'Huy Pham',      nick:'Huy',        grade:'E1', email:'duchuy.pham',         status:'replied', score:10, sub:[0,0,0,10],    uc:'Chưa sử dụng tuần qua', av:'#f97316' },
+  { name:'Huy Pham',      nick:'Huy',        grade:'E1', email:'duchuy.pham',         status:'replied', score:18, sub:[5,5,0,8],     uc:'T5 ✓ POD Weekly Report · 45p-1h saved · đang practice', av:'#f97316' },
   // pending
   { name:'Linh Nguyễn',   nick:'Linh (T)',   grade:'E1', email:'linh.nguyenthuy',     status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
   { name:'Thảo Trương',   nick:'Thảo',       grade:'E1', email:'thao.truong',         status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
-  { name:'Như Lê',        nick:'Như',        grade:'E1', email:'thaonhu.le',          status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
-  { name:'Thư Trương',    nick:'Thư',        grade:'E1', email:'anhthu.truong',       status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
-  { name:'Phương Lê',     nick:'Phương (L)', grade:'E1', email:'thaophuong.le',       status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Như Lê',      nick:'Như',        grade:'E1', email:'thaonhu.le',          status:'usecase', score:55, sub:[12,15,13,15], uc:'T5 ✓ Báo giá vendor→template KH · 45p→5p · có link', av:'#ec4899' },
+  { name:'Thư Trương',  nick:'Thư',        grade:'E1', email:'anhthu.truong',       status:'replied', score:12, sub:[0,0,0,12], uc:'T5 ✓ Plan tính PPC/GP2 bằng AI · testing cuối tuần', av:'#f472b6' },
+  { name:'Phương Lê',   nick:'Phương (L)', grade:'E1', email:'thaophuong.le',       status:'replied', score:30, sub:[5,10,5,10], uc:'T5 ✓ QC social content + review PPW/HĐ · 2h saved', av:'#a855f7' },
   { name:'Hạnh Phó',      nick:'Hạnh',       grade:'E1', email:'minhhanh.pho',        status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
-  { name:'Nguyên Mai',    nick:'Nguyên',     grade:'E1', email:'nguyen.mai',          status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Nguyên Mai',  nick:'Nguyên',     grade:'E1', email:'nguyen.mai',           status:'replied', score:15, sub:[0,5,0,10], uc:'T5 ✓ Đã tải Claude · Plan: email recap, check tiến độ', av:'#14b8a6' },
   { name:'Bửu Thanh',     nick:'Thanh (L)',  grade:'E1', email:'buuthanh.ly',         status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
   { name:'Diễm Trinh',    nick:'Trinh',      grade:'T2', email:'diemtrinh.huynh',     status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
   { name:'Oanh Nguyễn',   nick:'Oanh',       grade:'E1', email:'oanh.nguyen',         status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
