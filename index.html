@@ -319,7 +319,7 @@ function scoreColor(s) {
 }
 
 function renderTable(f) {
-  const rows = f === 'all' ? data : f === 'replied' ? data.filter(d => d.status !== 'pending') : data.filter(d => d.status === 'pending');
+  const rows = (f === 'all' ? data : f === 'replied' ? data.filter(d => d.status !== 'pending') : data.filter(d => d.status === 'pending')).slice().sort((a, b) => b.score - a.score);
   let rank = 1;
   document.getElementById('tbody').innerHTML = rows.map(e => {
     const sc = scoreColor(e.score);
