@@ -115,7 +115,7 @@ td:first-child { font-weight: 700; font-size: 14px; color: #9ca3af; width: 36px;
   </div>
   <div style="text-align:right">
     <div class="week-badge">📅 Tuần 1 · T3 18/03 – T6 20/03/2026</div>
-    <div class="updated">Cập nhật 21/03 10:30 · 9/20 reply T3 · 11/20 reply T5</div>
+    <div class="updated">Cập nhật 25/03 · 11/20 reply T3 · 11/20 reply T5</div>
   </div>
 </div>
 
@@ -288,25 +288,25 @@ td:first-child { font-weight: 700; font-size: 14px; color: #9ca3af; width: 36px;
 <script>
 const data = [
   // status: 'usecase' | 'replied' | 'pending'
-  { name:'Hân Duong',     nick:'Hân (E2)',   grade:'E2', email:'han.duong',          status:'usecase', score:95, sub:[28,24,25,18], uc:'Build Dashboard tracking & Forecast NE · 24h+ saved', av:'#f59e0b' },
+  { name:'Hân Duong',     nick:'Hân (E2)',   grade:'E2', email:'han.duong',          status:'usecase', score:77, sub:[22,22,15,18], uc:'T3 ✓ Auto meeting recap email VAS · skill hóa quy trình tuần · 30phút/tuần', av:'#f59e0b' },
   { name:'Hải Nguyen',    nick:'Hải',        grade:'E1', email:'thaihai.nguyen',      status:'usecase', score:88, sub:[26,23,17,22], uc:'T5 ✓ Lên Pro + tạo skill AI · BBNT Vietjet 90% accuracy', av:'#64748b' },
-  { name:'Thanh Ngân',    nick:'Ngân',       grade:'T2', email:'thanhngan.le',        status:'usecase', score:60, sub:[20,20,12,8],  uc:'QC design social post · ChatGPT · 1-2h tiết kiệm', av:'#92400e' },
-  { name:'Khánh Lê',      nick:'Khánh',      grade:'E1', email:'khanh.le',            status:'replied', score:32, sub:[5,12,0,15],   uc:'Có plan: task mgmt, booking, meeting recap, analytics', av:'#3b82f6' },
-  { name:'Lâm Tú Hân',   nick:'Hân (Tú)',   grade:'E1', email:'tuhan.lam',           status:'replied', score:48, sub:[8,12,10,18],   uc:'T5 ✓ Bot group học tập + workplan PAP · 3-4h dự kiến', av:'#8b5cf6' },
+  { name:'Thanh Ngân',    nick:'Ngân',       grade:'T2', email:'thanhngan.le',        status:'usecase', score:66, sub:[16,18,20,12],  uc:'T3 ✓ Research + slide pitching · tiết kiệm 3-4h', av:'#92400e' },
+  { name:'Khánh Lê',      nick:'Khánh',      grade:'E1', email:'khanh.le',            status:'usecase', score:80, sub:[18,22,20,20],   uc:'T3 ✓ Proposal template J&T từ brand guideline · 5-10phút/deck', av:'#3b82f6' },
+  { name:'Lâm Tú Hân',   nick:'Hân (Tú)',   grade:'E1', email:'tuhan.lam',           status:'usecase', score:66, sub:[20,19,12,15],   uc:'T3 ✓ Skill PAP workplan + info system từ data thô → ad insights', av:'#14b8a6' },
   { name:'Phương Vy',     nick:'Vy',         grade:'E1', email:'phuongvy.tran',       status:'replied', score:12, sub:[0,0,0,12],    uc:'Dùng ChatGPT/Gemini · Đăng ký Claude', av:'#ec4899' },
   { name:'Linh Hồ',       nick:'Linh',       grade:'E1', email:'linh.ho',             status:'replied', score:12, sub:[0,0,0,12],    uc:'Chưa dùng · Sẽ thử tuần này (19/3)', av:'#06b6d4' },
-  { name:'Long Hoang',    nick:'Long',       grade:'E2', email:'hoanglong.nguyen',    status:'replied', score:10, sub:[0,0,0,10],    uc:'Chưa dùng · Sẽ testing tuần sau', av:'#6366f1' },
+  { name:'Long Hoang',    nick:'Long',       grade:'E2', email:'hoanglong.nguyen',    status:'usecase', score:98, sub:[25,25,25,23],    uc:'T3 ✓ AI Agent 3-in-1: Quotation+Staffing+Onboarding CoE · 2ngày→30min', av:'#10b981' },
   { name:'Huy Pham',      nick:'Huy',        grade:'E1', email:'duchuy.pham',         status:'replied', score:18, sub:[5,5,0,8],     uc:'T5 ✓ POD Weekly Report · 45p-1h saved · đang practice', av:'#f97316' },
   // pending
-  { name:'Linh Nguyễn',   nick:'Linh (T)',   grade:'E1', email:'linh.nguyenthuy',     status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
-  { name:'Thảo Trương',   nick:'Thảo',       grade:'E1', email:'thao.truong',         status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Linh Nguyễn',   nick:'Linh (T)',   grade:'E1', email:'linh.nguyenthuy',     status:'usecase', score:68,  sub:[18,20,18,12], uc:'T3 ✓ Research brief & slide pitching · 1-2h/round', av:'#a855f7' },
+  { name:'Thảo Trương',   nick:'Thảo',       grade:'E1', email:'thao.truong',         status:'replied', score:35,  sub:[5,10,5,15], uc:'T3 ✓ Đang học AI workflow · plan: PPC alerts + trainee support', av:'#64748b' },
   { name:'Như Lê',      nick:'Như',        grade:'E1', email:'thaonhu.le',          status:'usecase', score:55, sub:[12,15,13,15], uc:'T5 ✓ Báo giá vendor→template KH · 45p→5p · có link', av:'#ec4899' },
   { name:'Thư Trương',  nick:'Thư',        grade:'E1', email:'anhthu.truong',       status:'replied', score:12, sub:[0,0,0,12], uc:'T5 ✓ Plan tính PPC/GP2 bằng AI · testing cuối tuần', av:'#f472b6' },
-  { name:'Phương Lê',   nick:'Phương (L)', grade:'E1', email:'thaophuong.le',       status:'replied', score:30, sub:[5,10,5,10], uc:'T5 ✓ QC social content + review PPW/HĐ · 2h saved', av:'#a855f7' },
-  { name:'Hạnh Phó',      nick:'Hạnh',       grade:'E1', email:'minhhanh.pho',        status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Phương Lê',   nick:'Phương (L)', grade:'E1', email:'thaophuong.le',       status:'usecase', score:61, sub:[15,18,16,12], uc:'T3 ✓ Brainstorm proposal + PPW review + legal contract analysis', av:'#f472b6' },
+  { name:'Hạnh Phó',      nick:'Hạnh',       grade:'E1', email:'minhhanh.pho',        status:'usecase', score:81,  sub:[20,24,22,15], uc:'T3 ✓ Auto budget dashboard Creative VAS · 3-4h/reconcile', av:'#ec4899' },
   { name:'Nguyên Mai',  nick:'Nguyên',     grade:'E1', email:'nguyen.mai',           status:'replied', score:15, sub:[0,5,0,10], uc:'T5 ✓ Đã tải Claude · Plan: email recap, check tiến độ', av:'#14b8a6' },
-  { name:'Bửu Thanh',     nick:'Thanh (L)',  grade:'E1', email:'buuthanh.ly',         status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
-  { name:'Diễm Trinh',    nick:'Trinh',      grade:'T2', email:'diemtrinh.huynh',     status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
+  { name:'Bửu Thanh',     nick:'Thanh (L)',  grade:'E1', email:'buuthanh.ly',         status:'usecase', score:59,  sub:[20,17,10,12], uc:'T3 ✓ Risk quantification + email wording + slide direction pitching', av:'#0ea5e9' },
+  { name:'Diễm Trinh',    nick:'Trinh',      grade:'T2', email:'diemtrinh.huynh',     status:'replied', score:5,  sub:[0,0,0,5], uc:'T3 ✓ Chưa setup Claude — booking AI sharing session với Long', av:'#6366f1' },
   { name:'Oanh Nguyễn',   nick:'Oanh',       grade:'E1', email:'oanh.nguyen',         status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
   { name:'Huyền Trâm',    nick:'Trâm',       grade:'T2', email:'huyentram.tong',      status:'pending', score:0,  sub:[0,0,0,0], uc:'—', av:'#d1d5db' },
 ];
